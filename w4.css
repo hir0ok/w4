@@ -63,17 +63,18 @@ ul.w4header{
     /* height: 140px; */
     list-style-type: none;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
+    justfy-content: center;
     color: #000;
     background-color: #fff;
     fontsize: 0px;
 }
 
 li.w4logo{
-    width: 24%;
+    width: 25%;
 }
 li.w4header{
-    width: 18%;
+    width: 16%;
 }
 
 a.w4header{
