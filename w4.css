@@ -60,17 +60,17 @@ h1.w4header{
 
 ul.w4header{
     /* width: 100%; */
-    height: 140px;
+    /* height: 140px; */
     list-style-type: none;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     color: #000;
     background-color: #fff;
     fontsize: 0px;
 }
 
 li.w4logo{
-    width: 20%;
+    width: 24%;
 }
 li.w4header{
     width: 18%;
