@@ -68,13 +68,13 @@ ul.w4header{
     color: #000;
     background-color: #fff;
     font-size: 0px;
-    /* letter-spacing: -0.5em; */
+    letter-spacing: -0.4em;
 }
 
 li.w4logo{
     width: 35%;
     display: inline-block;
-    letter-spacing: normal;
+    /* letter-spacing: normal; */
 }
 li.w4header{
     width: 18%;
