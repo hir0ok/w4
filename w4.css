@@ -60,6 +60,7 @@ h1.w4header{
 
 ul.w4header{
     /* width: 100%; */
+    height: 140px;
     list-style-type: none;
     display: flex;
     flex-wrap: wrap;
