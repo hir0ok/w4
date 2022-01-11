@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title> Nonlinear Solver Lab </title>
+    <title> 非線形ソルバーラボ </title>
      <link rel="stylesheet" href="w4.css" type="text/css">
   </head>
   <body>
@@ -11,9 +11,9 @@
       <ul class="w4header">
 	<li class="w4logo"><img height="120px" src="./w4logo.png">
 	</li>
-	<li class="w4header"><a href="./index.html#overview" class="w4header">Top</a></li>
-	<li class="w4header"><a href="./index.html#demo" class="w4header">Demo</a></li>
-	<li class="w4header"><a href="./index.html#docs" class="w4header">Docs</a></li>
+	<li class="w4header"><a href="./index.html#overview" class="w4header">トップ</a></li>
+	<li class="w4header"><a href="./index.html#demo" class="w4header">デモ</a></li>
+	<li class="w4header"><a href="./index.html#docs" class="w4header">文献等</a></li>
       </ul>
     </nav>
     </header>
@@ -24,58 +24,63 @@
       <section class="w4content">
 	<div class="w4content">
 	<div align="right">
-	  <a href="./index_j.html">Japanese page</a>
+	  <a href="./index.html">English page</a>
 	</div>
 	</div>
       </section>
 
       <section class="w4content">
-	<h1 class="w4content_g" id="overview"> Overview </h1>
+	<h1 class="w4content_g" id="overview"> 概要 </h1>
 	<div class="w4content">
 	  <ul>
 	    <li class="w4list">
-	    The aim of this web page is to introduce a by-product
-	    of our work, <b>a multi-dimensional root-finder</b>
-	    for the system of nonlinear equations.
+	      このページでは私達の研究の過程で作られた
+	      <b>新しい非線形連立方程式の解法</b>を
+	      Pythonプログラム付きで紹介しています。
 	    </li>
 	    <li class="w4list">
-	    The system of nonlinear equations can be solved by
-	    the well-known Newton-Raphson method
-	    which finds the root of nonlinear system equations
-	    <b>when one starts from an approximate solution
-	    close to the solution</b>.
+	      非線形連立方程式の解法はいくつか存在しますが、
+	      解く次元がある程度大きい場合は
+	      ニュートン法（ニュートン・ラフソン法）またはその亜種
+	      によって解かれることがほとんどです。
+	      <b>しかしながら、初期値を選ぶ時点で
+		未知の解に近い値を設定しなければ解けない
+		という特徴があります。
+	      </b>.
 	    </li>
 	    <li class="w4list">
-	      Based on the Newton-Raphson method,
-	      many extensions have been invented
-	      such as quasi-Newton methods,
-	      while <b>many problems</b> in physics, astrophysics,
-	      and engineerings
-	      <b>remain unsolved so far
-	      because of the failure of the Newton-type method</b>.
+	      ニュートン法を発展させる研究も数多くあり、
+	      計算速度を格段に上げた準ニュートン法なども開発されて
+	      いますが、それでも<b>未だに解けない非線形連立方程式が
+	      多く残っています</b>。
 	    </li>
 	    <li class="w4list">
-	      We have recently proposed a new method(<b>W4 method</b>) which has the wider convergence property and shown it is <b>an ex
-		tension of the Newton-Raphson method</b>.
+	      私達の解きたい偏微分方程式も
+	      非線形連立方程式を解く問題に帰着するため、
+	      より広範囲の初期値から解を得る手法
+	      (<b>W4法</b>)を開発しました。
+	      その後、W4法が<b>ニュートン法のある種の拡張</b>
+	      となっている
+	      ことを示し、具体的に比較できるようになりました。
+	      ここではPython バージョンのW4法を用いた
+	      具体的なデモを公開します。
 	    </li>
 	  </ul>
 	</div>
       </section>
 
       <section class="w4content">
-	<h1 class="w4content_r" id="demo"> Demonstrations & Download </h1>
+	<h1 class="w4content_r" id="demo"> デモとダウンロード </h1>
 	<div class="w4content">
 	  <ul>
 	    <li class="w4list">
-	      To demonstrate how the W4 method works,
-	      we show Python notebook below.
-	      <!-- My research field is astrophysics. -->
+	      以下、デモとしてPythonノートブックを公開します。
 	    </li>
 	  </ul>
 	</div>
 	<table border=1>
 	  <tr>
-	    <th class="w4content1">Name of Problem</th>
+	    <th class="w4content1">問題名</th>
 	    <th class="w4content1">(HTML)</th>
 	    <th class="w4content1">(ipynb)</th>
 	  </tr>
@@ -98,14 +103,14 @@
       </section>
 
       <section class="w4content">
-	<h1 class="w4content_b" id="docs"> Documents </h1>
+	<h1 class="w4content_b" id="docs"> 文献等 </h1>
 	<div class="w4content">
 	  <ul>
 	    <li class="w4list">
-	      We will update this section soon.
+	      これから徐々に更新していきます。
 	    </li>
 	    <li class="w4list">
-	      At this moment, we have the following papers.
+	      現時点で公開されている論文は以下です。
 	      <div class="w4content2">
 	      <ul>
 		<li> "The W4 method: a new multi-dimensional root-finding scheme for nonlinear systems of equations", H.Okawa, K.Fujisawa, Y.Yamamoto, R.Hirai, N.Yasutake, H.Nagakura, S.Yamada, arXiv[cs.NA],1809.04495
@@ -114,13 +119,14 @@
 		</li>
 	      </ul>
 	      </div>
+
 	    </li>
 	  </ul>
 	</div>
       </section>
 
       <section class="w4content">
-	<h1 class="w4content_w" id="docs"> Acknowledgements </h1>
+	<h1 class="w4content_w" id="docs"> 謝辞 </h1>
 	<div class="w4content">
 	  <ul>
 	    <li class="w4list">

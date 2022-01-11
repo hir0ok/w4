@@ -59,7 +59,7 @@ h1.w4header{
 }
 
 ul.w4header{
-    /* width: 100%; */
+    width: 100%;
     /* height: 140px; */
     list-style-type: none;
     display: flex;
@@ -155,12 +155,21 @@ h1.w4content_b:after{
 }
 
 div.w4content{
-    width: 100%;
-    margin: 1%;
+    width: 98%;
+    margin: 2%;
     color: #000;
     font-size: 2.5rem;
 }
 
+div.w4content2{
+    align-items: right;
+    justify-content: right;
+    display: flex;
+    width: 90%;
+    margin: 2%;
+    color: #000;
+    font-size: 1.5rem;
+}
 
 h1.w4content_r{
     display: inline-block;
@@ -179,6 +188,27 @@ h1.w4content_r:after{
     	#fff 100%
     );
 }
+
+h1.w4content_w{
+    display: inline-block;
+    padding: 4px;
+    color: #222;
+    font-size: 4rem;
+}
+h1.w4content_w:after{
+    height: 6px;
+    content: " ";
+    display: block;
+    background-image: linear-gradient(
+    	90deg,
+    	#333 0%,
+    	#577 53%,
+    	#fff 100%
+    );
+}
+
+
+
 
 li.w4list{
     list-style-type: none;
