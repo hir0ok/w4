@@ -13261,20 +13261,14 @@ div#notebook {
       <div class="w4header">Nonlinear Solver Lab </div>
 
       <section class="w4content">
-	<h1 class="w4content_g" id="overview"> Demonstration of the W4SV method </h1>
+	<h1 class="w4content_g" id="overview"> Getting Started </h1>
 	<div class="w4content">
 	<ul>
 	  <li class="w4list">
-	    To demonstrate the W4 method,
-	    we show below how to solve the system
-	    of nonlinear equations by the Python version
-	    of the W4 method with the SV decomposition.
-	  </li>
-	  <li class="w4list">
-	    In this example, standard test problems in the paper are solved.
-	    You can obtain the Python notebook in
-	    https://hir0ok.github.io/w4/W4demo_W4SV_TestFunctions.ipynb
-	    .
+	    This manual briefly explains the nonlinear multi-dimensional root-finding, W4 method.
+	    If you need much information,
+	    please see our
+	    <a href="https://arxiv.org/abs/1809.04495">reference</a>.
 	  </li>
 	</ul>
 	</div>
@@ -13287,9 +13281,12 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="W4SV-demonstration">W4SV demonstration<a class="anchor-link" href="#W4SV-demonstration">&#182;</a></h1><ul>
-<li>Solving two-dimensional problems in Standard Test Functions by the W4 method with the SV decomposition</li>
-</ul>
+<h1 id="Starter-Guide-for-W4">Starter Guide for W4<a class="anchor-link" href="#Starter-Guide-for-W4">&#182;</a></h1><ol>
+<li>Nonlinear problem we want to solve</li>
+<li>The Newton-Raphson method</li>
+<li>The W4 methods</li>
+<li>How to call the W4 function</li>
+</ol>
 
 </div>
 </div>
@@ -13297,700 +13294,97 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Package-Inclusion">Package Inclusion<a class="anchor-link" href="#Package-Inclusion">&#182;</a></h1><ul>
-<li>Sympy :: To define the set of nonlinear equations</li>
-<li>Numpy :: For iterative solver</li>
-<li>Scipy :: To use Linear solver</li>
-<li>Matplotlib :: For figure</li>
-</ul>
+<h2 id="1.-Nonlinear-problem-we-want-to-solve">1. Nonlinear problem we want to solve<a class="anchor-link" href="#1.-Nonlinear-problem-we-want-to-solve">&#182;</a></h2><p>In general, the system of nonlinear equations is given as $\textbf{F}(\textbf{x})=\textbf{0}$.<br>
+For example, if the number of variables is three, $\textbf{F}$ has three components,
+which yields to<br>
+$f_{1}(x_1,x_2,x_3)=0$,<br>
+$f_{2}(x_1,x_2,x_3)=0$,<br>
+$f_{3}(x_1,x_2,x_3)=0$.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sy</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="p">;</span>
-<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span><span class="n">cos</span><span class="p">;</span>
-<span class="c1">#from numpy import cos,sin,pi;</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">linalg</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="p">;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Parameter-Setup">Parameter Setup<a class="anchor-link" href="#Parameter-Setup">&#182;</a></h1><p>For the W4 method, we define</p>
+<h2 id="2.-The-Newton-Raphson-method">2. The Newton-Raphson method<a class="anchor-link" href="#2.-The-Newton-Raphson-method">&#182;</a></h2><p>To solve the system of nonlinear equations, that is, $\textbf{F}(\textbf{x})=\textbf{0}$,
+we linearize the system around the solution $\textbf{x}^{*}=\textbf{x}+\Delta\textbf{x}$,<br>
+$\textbf{F}(\textbf{x}^{*}) \sim \textbf{F}(\textbf{x}) +J\Delta\textbf{x}$<br>
+where $J = \frac{\partial \textbf{F}}{\partial\textbf{x}}$ is called Jacobian matrix.</p>
+<p>Since $\textbf{F}(\textbf{x}^{*})=\textbf{0}$, the Newton-Raphson method defines the increment computed by<br>
+$\textbf{x}^{n+1} = \textbf{x}^{n} -J^{-1}\textbf{F}(\textbf{x}^n)$.</p>
+<p>This Newton-Raphson map is regarded as the discretized form of the following differential equation:<br>
+$\dot{\textbf{x}} = -J^{-1}\textbf{F}(\textbf{x})$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-The-W4-method">3. The W4 method<a class="anchor-link" href="#3.-The-W4-method">&#182;</a></h2><p>The W4 method adds the second-order time derivative into the continuous form of the Newton method as follows:<br>
+$\ddot{\textbf{x}} +2\dot{\textbf{x}} -\dot{X}X^{-1}\dot{\textbf{x}} +XY\textbf{F}=\textbf{0}$.</p>
+<p>In short, introducing a new degree of freedom that corresponds to the choice of the matrix $X$ and $Y$, we safely solve the system of nonliear equations.<br>
+Usually, it is better to choose the matrix $XY=J^{-1}$, while we still have option to give matrix $X$.</p>
+<p>The second-order differential equations can be rewritten two first-order differential equations.<br>
+Thus, the discretized form of the W4 method is given<br>
+$\textbf{x}^{n+1} = \textbf{x}^{n} +\Delta\tau X\textbf{p}$<br>
+$\textbf{p}^{n+1} = (1-2\Delta\tau)\textbf{p}^{n} -\Delta\tau Y\textbf{F}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.-How-to-call-the-W4-function-in-Python">4. How to call the W4 function in Python<a class="anchor-link" href="#4.-How-to-call-the-W4-function-in-Python">&#182;</a></h2><p>The W4 function like w4ul and w4lh has eight arguments:
+(v,F,Fa,J,ini,dt,itermax,errmax).</p>
 <ul>
-<li>dim : dimension of system  (It determines the resolution)</li>
-<li>dtau : $\Delta\tau$ for the W4 evolution</li>
-<li>errmax : Criterion of error to stop iteration</li>
-<li>itermax : Maximum iteration.</li>
+<li>v  :: variables (n-dimensional numpy array)</li>
+<li>F  :: n-equations</li>
+<li>Fa :: absolute values of n-equations (for stopping criterion)</li>
+<li>J  :: Jacobian matrix defined from F</li>
+<li>ini:: initial guess for v</li>
+<li>dt     :: time interval</li>
+<li>itermax:: maximum step for iteration loop</li>
+<li>errmax :: criterion to stop iteration</li>
 </ul>
+<h3 id="(1)-Define-your-nonlinear-equations">(1) Define your nonlinear equations<a class="anchor-link" href="#(1)-Define-your-nonlinear-equations">&#182;</a></h3><p>First of all, you have to determine the dimension of your system of equations, dim,
+which also corresponds to the number of variables.<br>
+You can add your nonlinear equations in the Sympy style.<br>
+In this case, variables are defined from x[0] to x[dim-1].</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dtau</span><span class="o">=</span><span class="mf">0.8</span><span class="p">;</span>
-<span class="n">errmax</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">);</span>
-<span class="n">itermax</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Variables</span>
-<span class="c1">### x[1], x[2], x[3], ... , x[dim]</span>
-<span class="c1">### </span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">dim</span><span class="p">):</span>
-    <span class="n">vname</span> <span class="o">=</span> <span class="s1">&#39;x[&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span><span class="s1">&#39;]&#39;</span><span class="p">;</span>
-    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="n">vname</span><span class="p">));</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Definition-of-Source-in-the-Sympy-style">Definition of Source in the Sympy style<a class="anchor-link" href="#Definition-of-Source-in-the-Sympy-style">&#182;</a></h1><ul>
-<li><strong>F</strong>(<strong>x</strong>) : System of nonlinear equations</li>
-<li>|<strong>F</strong>(<strong>x</strong>)| : Absolute components</li>
-<li>J : Jacobian matrix $\partial$ <strong>F</strong> / $\partial$ <strong>x</strong></li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f_rosenbrock</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_rosenbrock</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">);</span>
-<span class="n">f_rosenbrock</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
-
-<span class="n">f_freudenstein</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_freudenstein</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="o">-</span><span class="mi">13</span> <span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span><span class="p">((</span><span class="mi">5</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
-<span class="n">f_freudenstein</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="o">-</span><span class="mi">29</span> <span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">14</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
-
-<span class="n">f_powell</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_powell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
-<span class="n">f_powell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span><span class="mf">1.0001</span> <span class="p">);</span>
-
-<span class="n">f_brown</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_brown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span><span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="p">);</span>
-<span class="n">f_brown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span> <span class="p">);</span>
-
-<span class="n">f_beale</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_beale</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="mf">1.5</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">);</span>
-<span class="n">f_beale</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="mf">2.25</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">);</span>
-
-<span class="n">f_hueso</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_hueso</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">);</span>
-<span class="n">f_hueso</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">5</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">);</span>
-
-<span class="n">f_fujisawa</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">f_fujisawa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span><span class="mi">4</span> <span class="p">);</span>
-<span class="n">f_fujisawa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># input source</span>
-<span class="k">def</span> <span class="nf">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
-
-<span class="c1">### Summation of absolute values of all terms in each equation</span>
-<span class="c1">###  to compare the error with the typical value of each equation</span>
-    <span class="n">fa</span> <span class="o">=</span> <span class="p">[];</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">args</span><span class="p">)):</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-        <span class="n">fa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>        
-
-<span class="c1">### Definition of variables, sources, absolute sources(x, F, |F|) as vector</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">x</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">f</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-    <span class="n">Fa</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">fa</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-    
-<span class="c1">### Analytic calculation of Jacobian(dim x dim Matrix)</span>
-    <span class="n">J</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">();</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-        <span class="n">J</span> <span class="o">=</span> <span class="n">J</span><span class="o">.</span><span class="n">col_insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>    
-
-<span class="c1">### From Sympy to Numpy</span>
-    <span class="n">arg</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-    <span class="n">vn</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
-    <span class="n">Fn</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
-    <span class="n">Fan</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Fa</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
-    <span class="n">Jacn</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>        
-        
-    <span class="k">return</span> <span class="n">vn</span><span class="p">,</span><span class="n">Fn</span><span class="p">,</span><span class="n">Fan</span><span class="p">,</span><span class="n">Jacn</span><span class="p">;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Transformation-from-Sympy-style-to-Numpy-style">Transformation from Sympy style to Numpy style<a class="anchor-link" href="#Transformation-from-Sympy-style-to-Numpy-style">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#vn, Fn, Fan, Jacn = calc_source(x,f);</span>
-<span class="n">vn_rosenbrock</span><span class="p">,</span> <span class="n">Fn_rosenbrock</span><span class="p">,</span> <span class="n">Fan_rosenbrock</span><span class="p">,</span> <span class="n">Jacn_rosenbrock</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_rosenbrock</span><span class="p">);</span>
-<span class="n">vn_freudenstein</span><span class="p">,</span> <span class="n">Fn_freudenstein</span><span class="p">,</span> <span class="n">Fan_freudenstein</span><span class="p">,</span> <span class="n">Jacn_freudenstein</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_freudenstein</span><span class="p">);</span>
-<span class="n">vn_powell</span><span class="p">,</span> <span class="n">Fn_powell</span><span class="p">,</span> <span class="n">Fan_powell</span><span class="p">,</span> <span class="n">Jacn_powell</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_powell</span><span class="p">);</span>
-<span class="n">vn_brown</span><span class="p">,</span> <span class="n">Fn_brown</span><span class="p">,</span> <span class="n">Fan_brown</span><span class="p">,</span> <span class="n">Jacn_brown</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_brown</span><span class="p">);</span>
-<span class="n">vn_beale</span><span class="p">,</span> <span class="n">Fn_beale</span><span class="p">,</span> <span class="n">Fan_beale</span><span class="p">,</span> <span class="n">Jacn_beale</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_beale</span><span class="p">);</span>
-<span class="n">vn_hueso</span><span class="p">,</span> <span class="n">Fn_hueso</span><span class="p">,</span> <span class="n">Fan_hueso</span><span class="p">,</span> <span class="n">Jacn_hueso</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_hueso</span><span class="p">);</span>
-<span class="n">vn_fujisawa</span><span class="p">,</span> <span class="n">Fn_fujisawa</span><span class="p">,</span> <span class="n">Fan_fujisawa</span><span class="p">,</span> <span class="n">Jacn_fujisawa</span> <span class="o">=</span> <span class="n">calc_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f_fujisawa</span><span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Definition-::-W4SV-method">Definition :: W4SV method<a class="anchor-link" href="#Definition-::-W4SV-method">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">w4sv</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">F</span><span class="p">,</span><span class="n">Fa</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">ini</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">):</span>
-    
-    <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim</span><span class="p">);</span>
-    <span class="n">v0</span> <span class="o">=</span> <span class="n">v</span><span class="p">(</span><span class="o">*</span><span class="n">ini</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">itermax</span><span class="p">):</span>
-        <span class="n">J0</span><span class="o">=</span><span class="n">J</span><span class="p">(</span><span class="o">*</span><span class="n">v0</span><span class="p">);</span>
-        <span class="n">F0</span><span class="o">=</span><span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-        <span class="n">Fa0</span><span class="o">=</span><span class="n">Fa</span><span class="p">(</span><span class="o">*</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">();</span>
-<span class="c1">#        print(v0);#,print(p0);</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">err</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="n">F0</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">/</span><span class="n">Fa0</span><span class="p">[</span><span class="n">k</span><span class="p">]));</span>
-            
-        <span class="k">if</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="n">errmax</span><span class="p">:</span>
-            <span class="k">break</span><span class="p">;</span>
-
-        <span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">J0</span><span class="p">);</span>
-        <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">):</span>
-                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">si</span><span class="p">,</span><span class="mf">1.0</span><span class="o">/</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">si</span><span class="p">,</span><span class="mf">1.0</span><span class="p">);</span>
-        
-        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">si</span><span class="p">);</span>
-
-        <span class="n">srcx</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p0</span><span class="p">);</span>
-        <span class="n">tmp</span>  <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">F0</span><span class="p">);</span>
-        <span class="n">srcp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">p0</span> <span class="o">-</span><span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
-
-        <span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span> <span class="o">+</span><span class="n">srcx</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span>
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span><span class="n">srcp</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span>
-        
-    <span class="k">return</span> <span class="n">v0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Initial-conditions-for-test-problems">Initial conditions for test problems<a class="anchor-link" href="#Initial-conditions-for-test-problems">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vini_rosenbrock</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_rosenbrock</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_rosenbrock</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">);</span>
-<span class="n">vini_rosenbrock</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_rosenbrock</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-<span class="n">vini_freudenstein</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_freudenstein</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_freudenstein</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">);</span>
-<span class="n">vini_freudenstein</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_freudenstein</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">);</span>
-
-<span class="n">vini_powell1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_powell1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_powell1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
-<span class="n">vini_powell1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_powell1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-<span class="n">vini_powell2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_powell2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_powell2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-<span class="n">vini_powell2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_powell2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-
-<span class="n">vini_brown</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_brown</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_brown</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-<span class="n">vini_brown</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_brown</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-<span class="n">vini_beale1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_beale1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_beale1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-<span class="n">vini_beale1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_beale1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-<span class="n">vini_beale2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_beale2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_beale2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
-<span class="n">vini_beale2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_beale2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">);</span>
-
-
-<span class="n">vini_hueso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_hueso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_hueso</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">);</span>
-<span class="n">vini_hueso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_hueso</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">);</span>
-
-<span class="n">vini_fujisawa1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_fujisawa1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_fujisawa1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
-<span class="n">vini_fujisawa1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_fujisawa1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
-
-<span class="n">vini_fujisawa2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]);</span>
-<span class="n">vini_fujisawa2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_fujisawa2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
-<span class="n">vini_fujisawa2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vini_fujisawa2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Demonstrations">Demonstrations<a class="anchor-link" href="#Demonstrations">&#182;</a></h1><ul>
-<li>Rosenbrock's problem</li>
-<li>Freudenstein's problem</li>
-<li>Powell's problem (Two initial conditions)</li>
-<li>Brown's problem</li>
-<li>Beale's problem (Two initial conditions)</li>
-<li>Hueso's problem</li>
-<li>Fujisawa's problem (Two initial conditions)</li>
-</ul>
-<h2 id="Outputs-:">Outputs :<a class="anchor-link" href="#Outputs-:">&#182;</a></h2><h3 id="(-Solution-x-and-y,-Number-of-iterations-to-obtain-the-solution,-Convergence-Error-)">( Solution x and y, Number of iterations to obtain the solution, Convergence Error )<a class="anchor-link" href="#(-Solution-x-and-y,-Number-of-iterations-to-obtain-the-solution,-Convergence-Error-)">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_rosenbrock</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_rosenbrock</span><span class="p">,</span><span class="n">Fn_rosenbrock</span><span class="p">,</span><span class="n">Fan_rosenbrock</span><span class="p">,</span><span class="n">Jacn_rosenbrock</span><span class="p">,</span><span class="n">vini_rosenbrock</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_rosenbrock</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([1.00002179, 0.99990862]), 8, 6.747541260676108e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_freudenstein</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_freudenstein</span><span class="p">,</span><span class="n">Fn_freudenstein</span><span class="p">,</span><span class="n">Fan_freudenstein</span><span class="p">,</span><span class="n">Jacn_freudenstein</span><span class="p">,</span><span class="n">vini_freudenstein</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_freudenstein</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[12]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([4.99965717, 4.00003787]), 12, 2.775421593901657e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_powell1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_powell</span><span class="p">,</span><span class="n">Fn_powell</span><span class="p">,</span><span class="n">Fan_powell</span><span class="p">,</span><span class="n">Jacn_powell</span><span class="p">,</span><span class="n">vini_powell1</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_powell1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[13]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([1.09968758e-05, 9.09250845e+00]), 26, 5.407163390305365e-05)</pre>
-</div>
+<pre><code>f = [];
+f.append( 10*(x[1]-x[0]**2) );
+f.append( 1 - x[0] );
 
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_powell2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_powell</span><span class="p">,</span><span class="n">Fn_powell</span><span class="p">,</span><span class="n">Fan_powell</span><span class="p">,</span><span class="n">Jacn_powell</span><span class="p">,</span><span class="n">vini_powell2</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_powell2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[21]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([1.10027403e-05, 9.08731140e+00]), 59, 7.336771587779154e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_brown</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_brown</span><span class="p">,</span><span class="n">Fn_brown</span><span class="p">,</span><span class="n">Fan_brown</span><span class="p">,</span><span class="n">Jacn_brown</span><span class="p">,</span><span class="n">vini_brown</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_brown</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[22]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([1.0000000e+06, 2.0002562e-06]), 10718, 6.404484485249837e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_beale1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_beale</span><span class="p">,</span><span class="n">Fn_beale</span><span class="p">,</span><span class="n">Fan_beale</span><span class="p">,</span><span class="n">Jacn_beale</span><span class="p">,</span><span class="n">vini_beale1</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_beale1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[23]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([2.99877843, 0.49984387]), 22, 9.95741166744937e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_beale2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_beale</span><span class="p">,</span><span class="n">Fn_beale</span><span class="p">,</span><span class="n">Fan_beale</span><span class="p">,</span><span class="n">Jacn_beale</span><span class="p">,</span><span class="n">vini_beale2</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_beale2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
+</code></pre>
+<h3 id="(2)-Set-up-numpy-variables-from-sympy-variables-by-calc_source-function">(2) Set up numpy variables from sympy variables by calc_source function<a class="anchor-link" href="#(2)-Set-up-numpy-variables-from-sympy-variables-by-calc_source-function">&#182;</a></h3><p>Automatically, you give necessary numpy variables from the above f.</p>
 
+<pre><code>vn, Fn, Fan, Jacn = calc_source(x,f);
 
-<div class="output_area">
+</code></pre>
+<h3 id="(3)-Choose-your-initial-condition-for-v">(3) Choose your initial condition for v<a class="anchor-link" href="#(3)-Choose-your-initial-condition-for-v">&#182;</a></h3><p>Initial guess is given in the numpy style.</p>
 
-    <div class="prompt output_prompt">Out[24]:</div>
+<pre><code>vini = np.array([]);
+vini = np.append(vini, 1.2);
+vini = np.append(vini, 1.0);
 
 
+</code></pre>
+<h3 id="(4)-Call-the-w4-function">(4) Call the w4 function<a class="anchor-link" href="#(4)-Call-the-w4-function">&#182;</a></h3><p>Finally, you can start the iteration from the initial guess.<br>
+If err and iter are less than your criteria, errmax and itermax,
+your problem is solved.<br>
+The final answer should be vans in this case.</p>
 
+<pre><code>vans, iter, err = w4ul(vn,Fn,Fan,Jacn,vini,dtau,itermax,errmax);</code></pre>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([2.99875884, 0.49983835]), 25, 9.916446502411328e-05)</pre>
 </div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_hueso</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_hueso</span><span class="p">,</span><span class="n">Fn_hueso</span><span class="p">,</span><span class="n">Fan_hueso</span><span class="p">,</span><span class="n">Jacn_hueso</span><span class="p">,</span><span class="n">vini_hueso</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_hueso</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([1.00946852, 2.12834374]), 15, 8.964573957454906e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_fujisawa1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_fujisawa</span><span class="p">,</span><span class="n">Fn_fujisawa</span><span class="p">,</span><span class="n">Fan_fujisawa</span><span class="p">,</span><span class="n">Jacn_fujisawa</span><span class="p">,</span><span class="n">vini_fujisawa1</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_fujisawa1</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[19]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([-0.73308642,  1.8608578 ]), 10, 2.7094839157621983e-05)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vans_fujisawa2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">w4sv</span><span class="p">(</span><span class="n">vn_fujisawa</span><span class="p">,</span><span class="n">Fn_fujisawa</span><span class="p">,</span><span class="n">Fan_fujisawa</span><span class="p">,</span><span class="n">Jacn_fujisawa</span><span class="p">,</span><span class="n">vini_fujisawa2</span><span class="p">,</span><span class="n">dtau</span><span class="p">,</span><span class="n">itermax</span><span class="p">,</span><span class="n">errmax</span><span class="p">);</span>
-<span class="n">vans_fujisawa2</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">err</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[26]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(array([-1.9838824 ,  0.25407058]), 76, 4.265257948210913e-05)</pre>
-</div>
-
 </div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
+
 
 
     </article>
