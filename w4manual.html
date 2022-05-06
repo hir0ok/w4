@@ -13313,7 +13313,7 @@ $\textbf{F}(\textbf{x}^{*}) \sim \textbf{F}(\textbf{x}) +J\Delta\textbf{x}$<br>
 where $J = \frac{\partial \textbf{F}}{\partial\textbf{x}}$ is called Jacobian matrix.</p>
 <p>Since $\textbf{F}(\textbf{x}^{*})=\textbf{0}$, the Newton-Raphson method defines the increment computed by<br>
 $\textbf{x}^{n+1} = \textbf{x}^{n} -J^{-1}\textbf{F}(\textbf{x}^n)$.</p>
-<p>This Newton-Raphson map is regarded as the discretized form of the following differential equation:<br>
+<p>This Newton-Raphson map is regarded as the discretized form of the following differential equation with the time interval $\Delta \tau=1$:<br>
 $\dot{\textbf{x}} = -J^{-1}\textbf{F}(\textbf{x})$</p>
 
 </div>
@@ -13324,7 +13324,7 @@ $\dot{\textbf{x}} = -J^{-1}\textbf{F}(\textbf{x})$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="3.-The-W4-method">3. The W4 method<a class="anchor-link" href="#3.-The-W4-method">&#182;</a></h2><p>The W4 method adds the second-order time derivative into the continuous form of the Newton method as follows:<br>
 $\ddot{\textbf{x}} +2\dot{\textbf{x}} -\dot{X}X^{-1}\dot{\textbf{x}} +XY\textbf{F}=\textbf{0}$.</p>
-<p>In short, introducing a new degree of freedom that corresponds to the choice of the matrix $X$ and $Y$, we safely solve the system of nonliear equations.<br>
+<p>In short, introducing a new degree of freedom that corresponds to the choice of the matrices $X$ and $Y$, we safely solve the system of nonliear equations.<br>
 Usually, it is better to choose the matrix $XY=J^{-1}$, while we still have option to give matrix $X$.</p>
 <p>The second-order differential equations can be rewritten two first-order differential equations.<br>
 Thus, the discretized form of the W4 method is given<br>
@@ -13337,8 +13337,7 @@ $\textbf{p}^{n+1} = (1-2\Delta\tau)\textbf{p}^{n} -\Delta\tau Y\textbf{F}$.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-How-to-call-the-W4-function-in-Python">4. How to call the W4 function in Python<a class="anchor-link" href="#4.-How-to-call-the-W4-function-in-Python">&#182;</a></h2><p>The W4 function like w4ul and w4lh has eight arguments:
-(v,F,Fa,J,ini,dt,itermax,errmax).</p>
+<h2 id="4.-How-to-call-the-W4-function-in-Python">4. How to call the W4 function in Python<a class="anchor-link" href="#4.-How-to-call-the-W4-function-in-Python">&#182;</a></h2><p>The W4 function like w4ul and w4lh has eight arguments: (v,F,Fa,J,ini,dt,itermax,errmax).</p>
 <ul>
 <li>v  :: variables (n-dimensional numpy array)</li>
 <li>F  :: n-equations</li>
@@ -13373,18 +13372,30 @@ vini = np.append(vini, 1.0);
 
 </code></pre>
 <h3 id="(4)-Call-the-w4-function">(4) Call the w4 function<a class="anchor-link" href="#(4)-Call-the-w4-function">&#182;</a></h3><p>Finally, you can start the iteration from the initial guess.<br>
-If err and iter are less than your criteria, errmax and itermax,
+If err and iter are less than your criteria, i.e., errmax and itermax,
 your problem is solved.<br>
-The final answer should be vans in this case.</p>
+The final answer should be in vans in this case.</p>
 
 <pre><code>vans, iter, err = w4ul(vn,Fn,Fan,Jacn,vini,dtau,itermax,errmax);</code></pre>
 
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
     </div>
   </div>
-
 
 
     </article>
