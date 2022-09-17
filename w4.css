@@ -282,6 +282,74 @@ li.w4footer{
     padding-right: 5%;
 }
 
+
+label{
+    text-align: right;
+    /* width: 200px; */
+    /* display: float; */
+    /* align: right; */
+    height: 30px;
+    font-size: 20px;
+    padding: 5px;
+    color: #222;
+    cursor: pointer;
+    margin: 0 0 0 0;
+    background-color: #c26;
+    /* display: block; */
+    float: right;
+}
+
+input{
+    /* display: none; */
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    margin: -1px;
+}
+
+.w4content .w4shown{
+    height: auto;
+    opacity: 1;
+}
+.w4content input:checked ~ .w4shown{
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+}
+
+.w4content .w4hidden{
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+}
+
+.w4content input:checked ~ .w4hidden{
+    height: auto;
+    opacity: 1;
+}
+
+/* .w4show .w4lab1{ */
+/*     height: auto; */
+/*     opacity: 1; */
+/* } */
+/* .w4show input:checked ~ .w4lab1{ */
+/*     height: 0; */
+/*     overflow: hidden; */
+/*     padding: 0; */
+/*     opacity: 0; */
+/* } */
+
+
+
+
 /* iframe{ */
 /*     width: 100%; */
 /* } */
