@@ -284,33 +284,33 @@ li.w4footer{
 
 
 label{
-    text-align: right;
-    /* width: 200px; */
+    text-align: center;
+    width: 20%;
     /* display: float; */
     /* align: right; */
     height: 30px;
     font-size: 20px;
     padding: 5px;
-    color: #222;
+    color: #ddd;
     cursor: pointer;
     margin: 0 0 0 0;
-    background-color: #c26;
+    background-color: #02a;
     /* display: block; */
     float: right;
 }
 
 input{
-    /* display: none; */
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    border: 0;
-    padding: 0;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    margin: -1px;
+    display: none;
+    /* position: absolute; */
+    /* white-space: nowrap; */
+    /* width: 1px; */
+    /* height: 1px; */
+    /* overflow: hidden; */
+    /* border: 0; */
+    /* padding: 0; */
+    /* clip: rect(0 0 0 0); */
+    /* clip-path: inset(50%); */
+    /* margin: -1px; */
 }
 
 .w4content .w4shown{
